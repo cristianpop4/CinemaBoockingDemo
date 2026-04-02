@@ -15,6 +15,10 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private CinemaRoom cinemaRoom;
+
     private Integer colNumber;
     private Integer rowNumber;
 }
