@@ -11,7 +11,7 @@ import com.example.CinemaBookingOnline.service.ScreeningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -34,43 +34,60 @@ public class ScreeningServiceImpl implements ScreeningService {
         screening.setMovie(movie);
         screening.setCinemaRoom(cinemaRoom);
         screening.setPrice(dto.price());
-        screening.setStartTime(LocalDateTime.now());
+        screening.setStartTime(LocalDate.now());
 
         return screeningRepository.save(screening);
     }
 
     @Override
     public List<Screening> getAllScreenings() {
-        return List.of();
+        return screeningRepository.findAll();
     }
 
     @Override
     public Screening getScreeningById(Long id) {
-        return null;
+        return screeningRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Screening not found"));
     }
 
     @Override
     public List<Screening> getScreeningsByMovieId(Long id) {
-        return List.of();
+        return screeningRepository.findByMovieId(id);
     }
 
     @Override
     public List<Screening> getScreeningsByRoomId(Long id) {
-        return List.of();
+        return screeningRepository.findByCinemaRoomId(id);
     }
 
     @Override
-    public List<Screening> getCurrentScreenings() {
-        return List.of();
+    public List<Screening> getScreeningByPeriod(LocalDate start, LocalDate end){
+        return screeningRepository.findByStartTimeBetween(start, end);
+    }
+    @Override
+    public List<Screening> getScreeningByPeriodQuery(LocalDate start, LocalDate end){
+        return screeningRepository.getScreeningByPeriod(start, end);
     }
 
     @Override
-    public Screening updateScreening(Long id, Screening screening) {
-        return null;
+    public Screening updateScreening(Long id, ScreeningRequestDto dto) {
+        Screening screening = getScreeningById(id);
+
+        screening.setMovie(movieRepository.findById(dto.movieId())
+                .orElseThrow(()-> new RuntimeException("Movie not found"))
+        );
+        screening.setCinemaRoom(cinemaRoomRepository.findById(dto.movieId())
+                .orElseThrow(()-> new RuntimeException("Room not found"))
+        );
+
+        screening.setPrice(dto.price());
+        return screeningRepository.save(screening);
     }
 
     @Override
     public void deleteScreeningById(Long id) {
+        Screening screening = getScreeningById(id);
 
+        screeningRepository.delete(screening);
     }
 }

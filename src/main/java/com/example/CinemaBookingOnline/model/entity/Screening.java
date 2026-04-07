@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "screenings")
@@ -26,5 +26,5 @@ public class Screening {
     private CinemaRoom cinemaRoom;
 
     private Double price;
-    private LocalDateTime startTime;
+    private LocalDate startTime;
 }
