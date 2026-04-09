@@ -1,6 +1,7 @@
 package com.example.CinemaBookingOnline.controller;
 
 import com.example.CinemaBookingOnline.model.dto.CinemaRoomRequestDto;
+import com.example.CinemaBookingOnline.model.dto.CinemaRoomResponseDto;
 import com.example.CinemaBookingOnline.model.entity.CinemaRoom;
 import com.example.CinemaBookingOnline.service.CinemaRoomService;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +16,17 @@ public class CinemaRoomController {
     private final CinemaRoomService cinemaRoomService;
 
     @PostMapping
-    public CinemaRoom createRoom(@RequestBody CinemaRoomRequestDto dto){
+    public CinemaRoomResponseDto createRoom(@RequestBody CinemaRoomRequestDto dto){
         return cinemaRoomService.createRoom(dto);
     }
 
     @GetMapping
-    public List<CinemaRoom> getAllRooms(){
+    public List<CinemaRoomResponseDto> getAllRooms(){
         return cinemaRoomService.getAllRooms();
     }
 
     @GetMapping("/{id}")
-    public CinemaRoom getRoomById(@PathVariable Long id){
+    public CinemaRoomResponseDto getRoomById(@PathVariable Long id){
         return cinemaRoomService.getRoomById(id);
     }
 }

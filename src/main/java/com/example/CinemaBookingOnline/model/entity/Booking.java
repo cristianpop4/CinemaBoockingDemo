@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +32,6 @@ public class Booking {
     )
     private Set<Seat> seats = new HashSet<>();
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     private BookingStatus status = BookingStatus.NONE;
 }
