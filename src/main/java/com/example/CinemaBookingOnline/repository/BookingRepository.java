@@ -12,7 +12,23 @@ import java.util.Set;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-//    @Query("SELECT DISTINCT b FROM Booking" +
-//            "JOIN b.seats WHERE b.screeningId = :screeningId AND s.id IN :seatIds AND b.status IN :statuses")
-//    List<Booking> findConflictBookings(Long screeningId, Set<Long> seatIds, List<BookingStatus> statuses);
+    @Query("""
+            select distinct b
+            from Booking b
+            join b.seats s
+            where b.screening.id = :screeningId
+                and s.id in :seatIds
+                and b.status in :statuses
+            """)
+    List<Booking> findConflictBookingJPQL(Long screeningId, Set<Long> seatIds, List<BookingStatus> statuses);
+
+    @Query("""
+            select count(b)
+            from Booking b
+            join b.seats s
+            where b.screening.id = :screeningId
+                and s.id in :seatIds
+                and b.status in :statuses
+            """)
+    Long conflictCountBooking(Long screeningId, Set<Long> seatIds, List<BookingStatus> statuses);
 }
