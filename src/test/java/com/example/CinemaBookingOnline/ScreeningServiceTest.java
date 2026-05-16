@@ -15,13 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ScreeningServiceTest {
@@ -67,6 +66,41 @@ public class ScreeningServiceTest {
         verify(movieRepository).findById(1L);
         verify(cinemaRoomRepository).findById(1L);
         verify(screeningRepository).save(any(Screening.class));
+    }
+
+    @Test
+    void createScreening_failed_movieNotFound(){
+        ScreeningRequestDto requestDto = new ScreeningRequestDto(1L, 2L, 50.0);
+
+        when(movieRepository.findById(1L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class, ()-> screeningService.createScreening(requestDto));
+
+        verify(movieRepository).findById(1L);
+        verifyNoInteractions(cinemaRoomRepository);
+        verifyNoInteractions(screeningRepository);
+    }
+
+    @Test
+    void getAllScreenings_success(){
+        Screening screening1 = new Screening();
+        screening1.setId(1L);
+        screening1.setMovie(new Movie());
+        screening1.setCinemaRoom(new CinemaRoom());
+
+        Screening screening2 = new Screening();
+        screening2.setId(2L);
+        screening2.setMovie(new Movie());
+        screening2.setCinemaRoom(new CinemaRoom());
+
+        when(screeningRepository.findAll()).thenReturn(List.of(screening1, screening2));
+
+        List<ScreeningResponseDto> responseDtos = screeningService.getAllScreenings();
+
+        assertEquals(2, responseDtos.size());
+
+        verify(screeningRepository).findAll();
     }
 
 

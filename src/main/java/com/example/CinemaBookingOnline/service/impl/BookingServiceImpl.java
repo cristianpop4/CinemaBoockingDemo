@@ -14,9 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,9 +45,7 @@ public class BookingServiceImpl implements BookingService {
             throw new RuntimeException("There are conflicts on your booking");
         }
 
-        Set<Seat> seatSet = seatRepository.findAllById(seats)
-                .stream()
-                .collect(Collectors.toSet());
+        Set<Seat> seatSet = new HashSet<>(seatRepository.findAllById(seats));
 
         Booking booking = new Booking();
         booking.setScreening(screening);
@@ -64,7 +62,7 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         if (booking.getStatus() != BookingStatus.ONHOLD) {
-            throw new RuntimeException("Booking status already changed pr cannot be confirmed");
+            throw new RuntimeException("Booking status already changed or cannot be confirmed");
         }
         booking.setStatus(BookingStatus.CONFIRMED);
 
